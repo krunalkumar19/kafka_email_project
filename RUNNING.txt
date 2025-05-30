@@ -1,0 +1,114 @@
+# 🧪 How to Run This Kafka Email Streaming Project
+
+This guide walks you through setting up and running the Kafka email streaming pipeline using Python and Kafka in **KRaft mode** (no ZooKeeper).
+
+---
+
+## 📋 Prerequisites
+
+- Windows OS with:
+  - **Kafka 3.6+** (configured for KRaft mode)
+  - **Git Bash or CMD**
+  - **Python 3.8+**
+  - **Git** (optional)
+- Python packages:
+  pip install kafka-python
+
+---
+
+## ⚙️ Kafka Setup (KRaft Mode – No ZooKeeper)
+
+### 🔹 Step 1: Navigate to Kafka directory
+
+cd C:\kafka\kafka_2.13-3.6.1
+
+### 🔹 Step 2: Generate a KRaft Cluster UUID
+
+.in\windows\kafka-storage.bat random-uuid
+
+Copy the generated UUID.
+
+---
+
+### 🔹 Step 3: Format the Kafka log directory with the UUID
+
+.in\windows\kafka-storage.bat format -t YOUR_UUID_HERE -c .\config\kraft\server.properties
+
+Replace YOUR_UUID_HERE with the UUID you copied.
+
+---
+
+### 🔹 Step 4: Start the Kafka Server (KRaft mode)
+
+.in\windows\kafka-server-start.bat .\config\kraft\server.properties
+
+Keep this terminal open and running.
+
+---
+
+### 🔹 Step 5: Create the Kafka Topic
+
+In a **new Git Bash or CMD window**:
+
+cd C:\kafka\kafka_2.13-3.6.1
+.in\windows\kafka-topics.bat --create --topic user-signups --bootstrap-server localhost:9092 --partitions 1 --replication-factor 1
+
+Verify the topic (optional):
+
+.in\windows\kafka-topics.bat --list --bootstrap-server localhost:9092
+
+---
+
+## 🐍 Python Scripts
+
+### 🔸 Run the Consumer
+
+In a new terminal window:
+
+cd path\to\your\project
+python consumer.py
+
+This starts listening to the Kafka topic user-signups.
+
+---
+
+### 🔸 Run the Producer
+
+In another terminal window:
+
+cd path\to\your\project
+python producer.py
+
+- Type a valid email and press Enter.
+- It will:
+  - Be saved to emails.txt
+  - Be sent to Kafka
+  - Appear in the consumer terminal
+
+Type exit to stop the producer.
+
+---
+
+## 🔁 Message Flow Summary
+
+User Input → producer.py → Kafka Topic → consumer.py → Console Output
+                  ↓
+          Also saved to emails.txt
+
+---
+
+## 📝 Notes
+
+- The Kafka setup uses KRaft mode, which does not require ZooKeeper.
+- If Kafka fails to start, check:
+  - Java is installed and available in PATH
+  - No conflicting services are using port 9092
+- For advanced features like database sinks or dashboards, this project can be extended easily.
+
+---
+
+## 📎 Related Files
+
+- producer.py — Collects and sends emails to Kafka.
+- consumer.py — Receives and prints messages from Kafka.
+- emails.txt — Stores all entered email addresses locally.
