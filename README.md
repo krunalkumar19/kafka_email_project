@@ -43,5 +43,5 @@ This simple pipeline can be extended for:
 
 ---
 
-## 📂 Repo Structure
+# Follow the RUNNING.txt for the process.
 
